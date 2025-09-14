@@ -127,10 +127,15 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# Добавляем CORS middleware
+# Настраиваем CORS, чтобы разрешить запросы от фронтенда
+origins = [
+    "https://indrive-hackathon-production.up.railway.app", # URL вашего фронтенда
+    "http://localhost:4200", # Для локальной разработки
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
