@@ -1,40 +1,36 @@
-# Многоэтапная сборка для Railway
-FROM python:3.9-slim as builder
+# Используем более легкий базовый образ
+FROM python:3.9-alpine as builder
 
 # Устанавливаем системные зависимости для сборки
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libglib2.0-0 \
-    libgomp1 \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+    build-base \
+    linux-headers \
+    libffi-dev \
+    openssl-dev \
+    musl-dev
 
 # Создаем виртуальное окружение
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# requirements.txt больше не нужен - устанавливаем зависимости напрямую
-
-# Устанавливаем зависимости с оптимизацией для CPU
+# Устанавливаем только самые необходимые зависимости
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir ultralytics>=8.0.0 && \
-    pip install --no-cache-dir opencv-python-headless>=4.5.0 && \
-    pip install --no-cache-dir fastapi>=0.100.0 && \
-    pip install --no-cache-dir uvicorn[standard]>=0.20.0 && \
-    pip install --no-cache-dir python-multipart>=0.0.6 && \
-    pip install --no-cache-dir tqdm>=4.64.0 && \
-    pip install --no-cache-dir pyyaml>=6.0 && \
-    pip install --no-cache-dir requests>=2.25.0
+    pip install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir ultralytics==8.0.196 && \
+    pip install --no-cache-dir opencv-python-headless==4.8.0.74 && \
+    pip install --no-cache-dir fastapi==0.104.1 && \
+    pip install --no-cache-dir uvicorn==0.24.0 && \
+    pip install --no-cache-dir python-multipart==0.0.6 && \
+    pip install --no-cache-dir pyyaml==6.0.1 && \
+    pip install --no-cache-dir requests==2.31.0
 
 # Финальный образ
-FROM python:3.9-slim
+FROM python:3.9-alpine
 
 # Устанавливаем только runtime зависимости
-RUN apt-get update && apt-get install -y \
-    libglib2.0-0 \
-    libgomp1 \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+RUN apk add --no-cache \
+    libstdc++ \
+    libgomp
 
 # Копируем виртуальное окружение из builder
 COPY --from=builder /opt/venv /opt/venv
@@ -48,13 +44,9 @@ COPY src/ ./src/
 COPY static/ ./static/
 COPY weights/ ./weights/
 COPY yolo11n.pt ./
-COPY data/dataset.yaml ./data/
-COPY data/example_labels.csv ./data/
 
-# Создаем минимальную папку data с несколькими примерами
-RUN mkdir -p data/images/val data/labels/val && \
-    cp data/images/val/*.jpg data/images/val/ 2>/dev/null || true && \
-    cp data/labels/val/*.txt data/labels/val/ 2>/dev/null || true
+# Создаем минимальную структуру data
+RUN mkdir -p data/images/val data/labels/val
 
 # Открываем порт
 EXPOSE 8000
