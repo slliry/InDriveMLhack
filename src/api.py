@@ -151,6 +151,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/")
 async def root():
     """Корневой эндпоинт - возвращает главную страницу фронтенда"""
+    return {"message": "Car Damage Detection API", "status": "running", "version": "2.0.0"}
+
+@app.get("/index.html")
+async def index():
+    """Возвращает главную страницу фронтенда"""
     return FileResponse("static/browser/index.html")
 
 @app.get("/api")
@@ -172,6 +177,11 @@ async def api_info():
 @app.get("/health")
 async def health_check():
     """Проверка состояния сервиса"""
+    return {"status": "ok", "message": "Service is running"}
+
+@app.get("/health/detailed")
+async def detailed_health_check():
+    """Детальная проверка состояния сервиса"""
     if api_service is None:
         return {
             "status": "unhealthy",
