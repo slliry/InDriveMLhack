@@ -1,0 +1,59 @@
+# Исключаем большие файлы и папки
+runs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/
+.gitignore
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+
+# Документация
+README.md
+QUICKSTART.md
+*.md
+
+# Тестовые файлы
+test_*.py
+test_*.jpg
+*_test.py
+tests/
+
+# Временные файлы
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE файлы
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Большие модели (оставляем только необходимые)
+yolov8s.pt
+yolov8n.pt
+
+# Большую часть датасета (оставляем только несколько примеров)
+data/images/val/
+data/labels/val/
+
+# Скрипты
+rename_long_files.ps1
