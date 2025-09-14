@@ -1,21 +1,14 @@
-# Используем самый легкий базовый образ
-FROM python:3.9-alpine
+# Используем Debian slim для предкомпилированных wheel'ов
+FROM python:3.9-slim
 
 # Устанавливаем системные зависимости
-RUN apk add --no-cache --virtual .build-deps \
-    build-base \
-    linux-headers \
-    libffi-dev \
-    openssl-dev \
-    musl-dev \
-    && apk add --no-cache \
-    libstdc++ \
-    libgomp
+RUN apt-get update && apt-get install -y \
+    libglib2.0-0 \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем Python зависимости в один слой (без кэширования)
+# Устанавливаем Python зависимости (предкомпилированные wheel'ы)
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir numpy==1.24.3 \
-    && pip install --no-cache-dir pillow==9.5.0 \
     && pip install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir ultralytics==8.0.196 \
     && pip install --no-cache-dir opencv-python-headless==4.8.0.74 \
@@ -24,8 +17,6 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir python-multipart==0.0.6 \
     && pip install --no-cache-dir pyyaml==6.0.1 \
     && pip install --no-cache-dir requests==2.31.0 \
-    && apk del .build-deps \
-    && rm -rf /var/cache/apk/* \
     && rm -rf /root/.cache/pip/*
 
 # Устанавливаем рабочую директорию
