@@ -23,7 +23,7 @@ from predict import CarDamageDetector
 class CarDamageAPI:
     """API сервис для детекции повреждений автомобилей"""
     
-    def __init__(self, model_path: str = "weights/best_model.pt"):
+    def __init__(self, model_path: str = "yolo11n.pt"):
         """
         Args:
             model_path (str): Путь к файлу с весами модели
@@ -118,15 +118,22 @@ class CarDamageAPI:
         return buffer.tobytes()
 
 
-# Создаем экземпляр API
-api_service = CarDamageAPI()
-
 # Создаем FastAPI приложение
 app = FastAPI(
     title="Car Damage Detection API",
     description="API для детекции повреждений автомобилей с помощью YOLOv8",
     version="2.0.0"
 )
+
+# Инициализируем API сервис (может быть None если не удалось загрузить)
+api_service = None
+
+try:
+    api_service = CarDamageAPI()
+    print("API сервис успешно инициализирован")
+except Exception as e:
+    print(f"Ошибка инициализации API сервиса: {e}")
+    print("Приложение запустится, но детекция будет недоступна")
 
 # Добавляем CORS middleware
 app.add_middleware(
@@ -165,6 +172,13 @@ async def api_info():
 @app.get("/health")
 async def health_check():
     """Проверка состояния сервиса"""
+    if api_service is None:
+        return {
+            "status": "unhealthy",
+            "error": "API service not initialized",
+            "model_loaded": False
+        }
+    
     return {
         "status": "healthy",
         "device": str(api_service.device),
@@ -176,6 +190,9 @@ async def health_check():
 @app.get("/model_info")
 async def model_info():
     """Информация о модели"""
+    if api_service is None:
+        raise HTTPException(status_code=503, detail="API service not available")
+    
     return {
         "model_name": "YOLOv8 Car Damage Detector",
         "model_type": "Object Detection",
@@ -202,6 +219,9 @@ async def detect_damages(
     Returns:
         JSONResponse: Результат детекции
     """
+    if api_service is None:
+        raise HTTPException(status_code=503, detail="API service not available")
+    
     # Проверяем тип файла
     if not file.content_type.startswith('image/'):
         raise HTTPException(
