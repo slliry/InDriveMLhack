@@ -1,0 +1,13 @@
+# Пример CSV файла с метками для обучения
+
+image_path,annotations
+car_001.jpg,"[{'class': 'scratch', 'bbox': [100, 150, 200, 180]}, {'class': 'dent', 'bbox': [300, 200, 350, 250]}]"
+car_002.jpg,"[{'class': 'rust', 'bbox': [50, 100, 120, 140]}]"
+car_003.jpg,"[{'class': 'crack', 'bbox': [80, 120, 150, 160]}]"
+car_004.jpg,"[]"
+car_005.jpg,"[{'class': 'scratch', 'bbox': [200, 100, 280, 130]}, {'class': 'rust', 'bbox': [150, 200, 220, 240]}]"
+car_006.jpg,"[{'class': 'dent', 'bbox': [100, 80, 180, 120]}]"
+car_007.jpg,"[]"
+car_008.jpg,"[{'class': 'scratch', 'bbox': [50, 50, 120, 80]}]"
+car_009.jpg,"[{'class': 'crack', 'bbox': [300, 150, 380, 200]}, {'class': 'dent', 'bbox': [200, 250, 280, 300]}]"
+car_010.jpg,"[]"
