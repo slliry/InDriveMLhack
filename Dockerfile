@@ -19,6 +19,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir ultralytics>=8.0.0 && \
+    pip install --no-cache-dir opencv-python-headless>=4.5.0 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Финальный образ

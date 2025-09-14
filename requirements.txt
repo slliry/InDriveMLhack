@@ -8,7 +8,7 @@ torchvision>=0.15.0
 
 # Обработка изображений
 Pillow>=9.0.0
-opencv-python-headless>=4.5.0
+# opencv-python-headless>=4.5.0  # устанавливается отдельно в Dockerfile
 
 # FastAPI и веб-сервер
 fastapi>=0.100.0
