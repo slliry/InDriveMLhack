@@ -3,8 +3,8 @@
 torch>=2.0.0
 torchvision>=0.15.0
 
-# YOLOv8 для Object Detection
-ultralytics>=8.0.0
+# YOLOv8 для Object Detection (устанавливается отдельно в Dockerfile)
+# ultralytics>=8.0.0
 
 # Обработка изображений
 Pillow>=9.0.0
