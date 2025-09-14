@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
 
 # Устанавливаем Python зависимости (совместимые версии)
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir "numpy<2.0" \
+    && pip install --no-cache-dir numpy==1.24.3 \
+    && pip install --no-cache-dir pillow==9.5.0 \
     && pip install --no-cache-dir opencv-python-headless==4.8.0.74 \
     && pip install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir ultralytics==8.0.196 \
@@ -24,6 +25,7 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir python-multipart==0.0.6 \
     && pip install --no-cache-dir pyyaml==6.0.1 \
     && pip install --no-cache-dir requests==2.31.0 \
+    && pip install --no-cache-dir --force-reinstall numpy==1.24.3 \
     && rm -rf /root/.cache/pip/*
 
 # Устанавливаем рабочую директорию
