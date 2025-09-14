@@ -8,7 +8,8 @@ from PIL import Image
 import numpy as np
 import cv2
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from ultralytics import YOLO
@@ -136,10 +137,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Подключаем статические файлы фронтенда
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @app.get("/")
 async def root():
-    """Корневой эндпоинт"""
+    """Корневой эндпоинт - возвращает главную страницу фронтенда"""
+    return FileResponse("static/browser/index.html")
+
+@app.get("/api")
+async def api_info():
+    """Информация об API"""
     return {
         "message": "Car Damage Detection API",
         "version": "2.0.0",
@@ -385,6 +394,18 @@ async def get_visualization(image_name: str, conf_threshold: float = 0.25):
             status_code=500,
             detail=f"Ошибка при создании визуализации: {str(e)}"
         )
+
+
+# Добавляем catch-all маршрут для фронтенда (должен быть последним!)
+@app.get("/{file_path:path}")
+async def serve_static_files(file_path: str):
+    """Обслуживает статические файлы фронтенда"""
+    static_file_path = f"static/browser/{file_path}"
+    if os.path.exists(static_file_path) and os.path.isfile(static_file_path):
+        return FileResponse(static_file_path)
+    else:
+        # Если файл не найден, возвращаем главную страницу (для SPA)
+        return FileResponse("static/browser/index.html")
 
 
 if __name__ == "__main__":
