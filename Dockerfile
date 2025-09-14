@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir pillow==9.5.0 \
     && pip install --no-cache-dir opencv-python-headless==4.8.0.74 \
     && pip install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu \
-    && pip install --no-cache-dir ultralytics==8.1.0 \
+    && pip install --no-cache-dir ultralytics==8.2.0 \
     && pip install --no-cache-dir fastapi==0.104.1 \
     && pip install --no-cache-dir uvicorn==0.24.0 \
     && pip install --no-cache-dir python-multipart==0.0.6 \
@@ -35,7 +35,6 @@ WORKDIR /app
 COPY src/ ./src/
 COPY static/ ./static/
 COPY weights/ ./weights/
-COPY yolo11n.pt ./
 
 # Создаем минимальную структуру data
 RUN mkdir -p data/images/val data/labels/val

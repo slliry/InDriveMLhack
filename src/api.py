@@ -23,7 +23,7 @@ from predict import CarDamageDetector
 class CarDamageAPI:
     """API сервис для детекции повреждений автомобилей"""
     
-    def __init__(self, model_path: str = "yolo11n.pt"):
+    def __init__(self, model_path: str = "yolov8n.pt"):
         """
         Args:
             model_path (str): Путь к файлу с весами модели
@@ -151,12 +151,12 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/")
 async def root():
     """Корневой эндпоинт - возвращает главную страницу фронтенда"""
-    return {"message": "Car Damage Detection API", "status": "running", "version": "2.0.0"}
-
-@app.get("/index.html")
-async def index():
-    """Возвращает главную страницу фронтенда"""
     return FileResponse("static/browser/index.html")
+
+@app.get("/api/status")
+async def api_status():
+    """Статус API"""
+    return {"message": "Car Damage Detection API", "status": "running", "version": "2.0.0"}
 
 @app.get("/api")
 async def api_info():

@@ -17,7 +17,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 class CarDamageDetector:
     """Класс для детекции повреждений автомобилей с помощью YOLOv8"""
     
-    def __init__(self, model_path: str = "yolo11n.pt", device: str = 'auto'):
+    def __init__(self, model_path: str = "yolov8n.pt", device: str = 'auto'):
         """
         Args:
             model_path (str): Путь к файлу с весами модели
@@ -42,8 +42,8 @@ class CarDamageDetector:
         """Загружает модель YOLOv8"""
         if not os.path.exists(self.model_path):
             print(f"Предупреждение: модель {self.model_path} не найдена")
-            print("Используем предобученную модель YOLOv11n")
-            return YOLO('yolo11n.pt')
+            print("Используем предобученную модель YOLOv8n")
+            return YOLO('yolov8n.pt')
         
         print(f"Загружаем модель: {self.model_path}")
         model = YOLO(self.model_path)
