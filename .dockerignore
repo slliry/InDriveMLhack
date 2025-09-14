@@ -1,4 +1,4 @@
-# Исключаем большие файлы и папки
+# Исключаем ВСЕ большие файлы и папки
 runs/
 __pycache__/
 *.pyc
@@ -51,9 +51,19 @@ Thumbs.db
 yolov8s.pt
 yolov8n.pt
 
-# Большую часть датасета (оставляем только несколько примеров)
-data/images/val/
-data/labels/val/
+# ВСЕ данные (не нужны для работы API)
+data/
+!data/images/val/
+!data/labels/val/
 
 # Скрипты
 rename_long_files.ps1
+
+# Дополнительные файлы для экономии места
+*.log
+*.pid
+*.seed
+*.pid.lock
+.npm
+.yarn-integrity
+node_modules/

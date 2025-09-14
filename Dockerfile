@@ -1,40 +1,30 @@
-# Используем более легкий базовый образ
-FROM python:3.9-alpine as builder
+# Используем самый легкий базовый образ
+FROM python:3.9-alpine
 
-# Устанавливаем системные зависимости для сборки
-RUN apk add --no-cache \
+# Устанавливаем системные зависимости
+RUN apk add --no-cache --virtual .build-deps \
     build-base \
     linux-headers \
     libffi-dev \
     openssl-dev \
-    musl-dev
-
-# Создаем виртуальное окружение
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Устанавливаем только самые необходимые зависимости
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir ultralytics==8.0.196 && \
-    pip install --no-cache-dir opencv-python-headless==4.8.0.74 && \
-    pip install --no-cache-dir fastapi==0.104.1 && \
-    pip install --no-cache-dir uvicorn==0.24.0 && \
-    pip install --no-cache-dir python-multipart==0.0.6 && \
-    pip install --no-cache-dir pyyaml==6.0.1 && \
-    pip install --no-cache-dir requests==2.31.0
-
-# Финальный образ
-FROM python:3.9-alpine
-
-# Устанавливаем только runtime зависимости
-RUN apk add --no-cache \
+    musl-dev \
+    && apk add --no-cache \
     libstdc++ \
     libgomp
 
-# Копируем виртуальное окружение из builder
-COPY --from=builder /opt/venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# Устанавливаем Python зависимости в один слой (без кэширования)
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir ultralytics==8.0.196 \
+    && pip install --no-cache-dir opencv-python-headless==4.8.0.74 \
+    && pip install --no-cache-dir fastapi==0.104.1 \
+    && pip install --no-cache-dir uvicorn==0.24.0 \
+    && pip install --no-cache-dir python-multipart==0.0.6 \
+    && pip install --no-cache-dir pyyaml==6.0.1 \
+    && pip install --no-cache-dir requests==2.31.0 \
+    && apk del .build-deps \
+    && rm -rf /var/cache/apk/* \
+    && rm -rf /root/.cache/pip/*
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
