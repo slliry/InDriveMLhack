@@ -12,15 +12,19 @@ RUN apt-get update && apt-get install -y \
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Копируем requirements.txt
-COPY requirements.txt .
+# requirements.txt больше не нужен - устанавливаем зависимости напрямую
 
 # Устанавливаем зависимости с оптимизацией для CPU
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir ultralytics>=8.0.0 && \
     pip install --no-cache-dir opencv-python-headless>=4.5.0 && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir fastapi>=0.100.0 && \
+    pip install --no-cache-dir uvicorn[standard]>=0.20.0 && \
+    pip install --no-cache-dir python-multipart>=0.0.6 && \
+    pip install --no-cache-dir tqdm>=4.64.0 && \
+    pip install --no-cache-dir pyyaml>=6.0 && \
+    pip install --no-cache-dir requests>=2.25.0
 
 # Финальный образ
 FROM python:3.9-slim
