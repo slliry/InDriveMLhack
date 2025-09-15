@@ -36,9 +36,14 @@ def main():
     
     # Загружаем конфигурацию датасета
     with open(args.config, 'r', encoding='utf-8') as f:
-        dataset_config = yaml.safe_load(f)
-    
-    print(f"Классы повреждений: {dataset_config['names']}")
+        dataset_config = yaml.safe_load(f) or {}
+
+    # Безопасно читаем список классов
+    class_names = dataset_config.get('names')
+    if class_names is None:
+        print("Предупреждение: ключ 'names' отсутствует в data/dataset.yaml или файл поврежден. Продолжаю без вывода классов.")
+    else:
+        print(f"Классы повреждений: {class_names}")
     print(f"Начинаем обучение модели {args.model}...")
     print(f"Конфигурация датасета: {args.config}")
     print(f"Эпохи: {args.epochs}, Батч: {args.batch_size}, Размер изображений: {args.imgsz}")

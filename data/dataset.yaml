@@ -1,4 +1,4 @@
-names:
+ам уже names:
 - scratch
 - dent
 - rust
@@ -6,4 +6,5 @@ names:
 nc: 4
 path: ./data
 train: images/train
-val: images/train
+val: images/val
+test: images/test
